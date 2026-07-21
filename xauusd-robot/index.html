@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Отчёты по стратегиям XAUUSD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #F6F4EC; --surface: #FFFFFF; --ink: #1D1B15; --muted: #6B665A; --line: #DCD6C4;
+    --gold: #A9770A; --blue: #2F6FB0;
+    --serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+    --sans: -apple-system, "Segoe UI", system-ui, sans-serif;
+    --mono: ui-monospace, "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  :root[data-theme="dark"] { --bg: #121309; --surface: #1B1C13; --ink: #ECE7D6; --muted: #A29C87; --line: #38361F; --gold: #C99A2E; --blue: #5C9AE0; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #121309; --surface: #1B1C13; --ink: #ECE7D6; --muted: #A29C87; --line: #38361F; --gold: #C99A2E; --blue: #5C9AE0; }
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.5; max-width: 760px; margin: 0 auto; padding: 64px 20px 80px; }
+  a { color: inherit; }
+  .kicker { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  h1 { font-family: var(--serif); font-weight: 600; font-size: 36px; letter-spacing: -.01em; margin: 0 0 12px; text-wrap: balance; }
+  p.lede { color: var(--muted); font-size: 15px; max-width: 56ch; margin: 0 0 40px; }
+  .list { display: flex; flex-direction: column; gap: 14px; }
+  .item { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 20px 22px; text-decoration: none; transition: border-color .12s ease; }
+  .item:hover { border-color: var(--gold); }
+  .item .name { font-family: var(--serif); font-size: 18px; margin-bottom: 6px; }
+  .item .desc { color: var(--muted); font-size: 13.5px; }
+  .item .tags { margin-top: 10px; display: flex; gap: 8px; }
+  .tag { font-family: var(--mono); font-size: 10.5px; padding: 3px 8px; border-radius: 3px; background: var(--bg); border: 1px solid var(--line); color: var(--muted); }
+  footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 11px; color: var(--muted); }
+</style>
+</head>
+<body>
+  <div class="kicker">robot · XAUUSD · trend_slope + M15-скальпер</div>
+  <h1>Отчёты по результатам стратегий</h1>
+  <p class="lede">Бэктест-статистика за последний год (21.07.2025 — 21.07.2026) в двух сценариях риск-менеджмента.</p>
+  <div class="list">
+    <a class="item" href="report-1000-separate.html">
+      <div class="name">Депозит $1000 · риск 1% / 1% · раздельные счета</div>
+      <div class="desc">Каждая стратегия на своём собственном $1000, консервативный риск 1% для обеих. Суммарно +$1601.57 (~80%) на общий вложенный капитал $2000.</div>
+      <div class="tags"><span class="tag">$1000</span><span class="tag">1% / 1%</span><span class="tag">раздельно</span></div>
+    </a>
+    <a class="item" href="report-1000-battle.html">
+      <div class="name">Депозит $1000 · боевые параметры 2% / 1% · один счёт</div>
+      <div class="desc">Как торгуется реально: trend_slope риск 2%, скальпер 1%, оба на одном общем компаундируемом балансе. Итог +$4358.81 (+435.9%) — с важной оговоркой о просадке 30.8%.</div>
+      <div class="tags"><span class="tag">$1000</span><span class="tag">2% / 1%</span><span class="tag">общий счёт</span></div>
+    </a>
+  </div>
+  <footer>сгенерировано 21.07.2026</footer>
+</body>
+</html>

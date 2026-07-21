@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Отчёт: депозит $1000, боевые параметры 2%/1%, один счёт</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #F6F4EC; --surface: #FFFFFF; --surface-2: #EFEBDD;
+    --ink: #1D1B15; --muted: #6B665A; --faint: #B7B2A2; --line: #DCD6C4;
+    --gold: #A9770A; --blue: #2F6FB0; --pos: #3E7E4F; --neg: #B0432B;
+    --radius: 3px;
+    --serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+    --sans: -apple-system, "Segoe UI", system-ui, sans-serif;
+    --mono: ui-monospace, "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  :root[data-theme="dark"] {
+    --bg: #121309; --surface: #1B1C13; --surface-2: #24251A;
+    --ink: #ECE7D6; --muted: #A29C87; --faint: #5B564A; --line: #38361F;
+    --gold: #C99A2E; --blue: #5C9AE0; --pos: #5FAE71; --neg: #D06B51;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121309; --surface: #1B1C13; --surface-2: #24251A;
+      --ink: #ECE7D6; --muted: #A29C87; --faint: #5B564A; --line: #38361F;
+      --gold: #C99A2E; --blue: #5C9AE0; --pos: #5FAE71; --neg: #D06B51;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.5; max-width: 980px; margin: 0 auto; padding: 0 20px 80px; }
+  a { color: inherit; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .pos { color: var(--pos); } .neg { color: var(--neg); }
+  header.masthead { padding: 44px 0 28px; border-bottom: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  .back-link { font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; display: inline-block; margin-top: 24px; }
+  .masthead-left .kicker { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .masthead-left h1 { font-family: var(--serif); font-weight: 600; font-size: 34px; letter-spacing: -.01em; margin: 0; text-wrap: balance; }
+  .masthead-right { text-align: right; font-family: var(--mono); font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .masthead-right strong { color: var(--ink); font-weight: 600; }
+  .hero { padding: 40px 0 36px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center; }
+  .hero-figure .label { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .hero-figure .value { font-family: var(--mono); font-weight: 500; font-size: 48px; letter-spacing: -.02em; }
+  .hero-figure .sub { margin-top: 8px; font-size: 14px; color: var(--muted); max-width: 46ch; }
+  .hero-split { display: flex; flex-direction: column; gap: 14px; }
+  .hero-split .row { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dotted var(--line); padding-bottom: 10px; }
+  .hero-split .row .name { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .hero-split .row .amt { font-family: var(--mono); font-size: 18px; }
+  h2.section { font-family: var(--serif); font-weight: 600; font-size: 20px; margin: 44px 0 4px; }
+  p.section-note { color: var(--muted); font-size: 13px; margin: 0 0 20px; max-width: 62ch; }
+  table.stats { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  table.stats th, table.stats td { padding: 10px 14px; text-align: right; border-bottom: 1px solid var(--line); }
+  table.stats th:first-child, table.stats td:first-child { text-align: left; }
+  table.stats thead th { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 500; border-bottom: 2px solid var(--ink); }
+  table.stats td { font-family: var(--mono); } table.stats td:first-child { font-family: var(--sans); }
+  table.stats tr.total td { font-weight: 600; border-top: 2px solid var(--ink); border-bottom: none; }
+  .chart-wrap { overflow-x: auto; }
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 24px 0 8px; }
+  .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+  .kpi .label { font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .kpi .value { font-family: var(--mono); font-size: 22px; }
+  .footnote { margin-top: 32px; padding: 18px 22px; background: var(--surface-2); border-left: 3px solid var(--neg); border-radius: 0 var(--radius) var(--radius) 0; font-size: 13px; color: var(--muted); }
+  .footnote strong { color: var(--ink); }
+  .footnote.warn { border-left-color: var(--neg); }
+  footer.colophon { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 11px; color: var(--faint); display: flex; justify-content: space-between; }
+  @media (max-width: 720px) { .hero { grid-template-columns: 1fr; } .kpi-row { grid-template-columns: 1fr 1fr; } .masthead { flex-direction: column; align-items: flex-start; } .masthead-right { text-align: left; } }
+</style>
+</head>
+<body>
+
+<a class="back-link" href="index.html">← к списку отчётов</a>
+<header class="masthead">
+  <div class="masthead-left">
+    <div class="kicker">Ведомость результатов · XAUUSD · боевые параметры</div>
+    <h1>Депозит $1000 · один общий счёт</h1>
+  </div>
+  <div class="masthead-right">
+    Период: <strong>21.07.2025 — 21.07.2026</strong><br>
+    Депозит: <strong>$1000 (общий)</strong><br>
+    Риск: <strong>trend_slope 2% · скальпер 1%</strong>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-figure">
+    <div class="label">Итоговый результат на одном общем счёте</div>
+    <div class="value pos">+$4358.81</div>
+    <div class="sub">+435.9% за год — обе стратегии компаундируются от одного и того же баланса, риски 2% (trend_slope) и 1% (скальпер), как в реальной боевой торговле.</div>
+  </div>
+  <div class="hero-split">
+    <div class="row"><div class="name"><span class="swatch" style="background:var(--gold)"></span>trend_slope · H1 (2%)</div><div class="amt pos">+$2762.45</div></div>
+    <div class="row"><div class="name"><span class="swatch" style="background:var(--blue)"></span>M15-скальпер (1%)</div><div class="amt pos">+$1596.36</div></div>
+  </div>
+</section>
+
+<div class="kpi-row">
+  <div class="kpi"><div class="label">Сделок всего</div><div class="value">1077</div></div>
+  <div class="kpi"><div class="label">Win rate</div><div class="value">35.8%</div></div>
+  <div class="kpi"><div class="label">Profit factor</div><div class="value">1.51</div></div>
+  <div class="kpi"><div class="label">Макс. просадка</div><div class="value neg">30.8%</div></div>
+</div>
+
+<h2 class="section">Помесячный вклад в общий баланс</h2>
+<p class="section-note">Каждый столбец — вклад стратегии в общий баланс за месяц (объём каждой сделки зависит от общего баланса на момент входа).</p>
+<div class="chart-wrap"><div class="chart" id="chart"></div></div>
+<div class="legend" style="display:flex;gap:22px;margin-top:16px;font-size:12.5px;color:var(--muted)">
+  <div style="display:flex;align-items:center;gap:7px"><span class="swatch" style="background:var(--gold)"></span>trend_slope (2%)</div>
+  <div style="display:flex;align-items:center;gap:7px"><span class="swatch" style="background:var(--blue)"></span>M15-скальпер (1%)</div>
+</div>
+
+<h2 class="section">Полная помесячная таблица</h2>
+<div class="chart-wrap">
+<table class="stats">
+  <thead><tr><th>Месяц</th><th>trend_slope сделок</th><th>trend_slope вклад</th><th>скальпер сделок</th><th>скальпер вклад</th><th>Итого</th></tr></thead>
+  <tbody id="stats-body"></tbody>
+</table>
+</div>
+
+<div class="footnote warn">
+  <strong>Читайте внимательно, прежде чем ориентироваться на эти цифры.</strong> Результат на общем счёте (+435.9%)
+  в разы больше, чем сумма двух независимых расчётов на раздельных депозитах (см.
+  <a href="report-1000-separate.html">отчёт с риском 1%/1% на раздельных счетах</a> — там суммарно только +80%).
+  Причина — компаундинг на ОДНОМ растущем балансе: ранние выигрыши одной стратегии увеличивают размер позиций другой.
+  Например, почти половина (45%) всей годовой прибыли пришлась на один март 2026 — потому что к этому моменту баланс
+  уже сильно вырос. Модель также НЕ учитывает распределение реальной маржи между одновременно открытыми позициями
+  двух стратегий (плавающая прибыль/убыток открытых сделок не влияет на размер следующей — только зафиксированный
+  баланс), что на практике может ограничивать реальный объём сильнее. Просадка тоже выросла — до 30.8% против
+  12-20% на раздельных счетах. Рекомендую воздержаться от восприятия +435.9% как консервативного ориентира.
+</div>
+
+<footer class="colophon"><span>robot / XAUUSD live strategies</span><span>сгенерировано 21.07.2026</span></footer>
+
+<script>
+  const monthly = [
+    ["2025-07",4,33.33,28,14.60],["2025-08",16,-190.98,90,-49.54],["2025-09",11,132.73,74,-45.71],
+    ["2025-10",11,227.73,54,50.45],["2025-11",11,177.52,65,135.72],["2025-12",13,-141.85,76,-54.91],
+    ["2026-01",8,252.92,64,227.47],["2026-02",12,252.73,71,102.62],["2026-03",20,1301.03,88,649.82],
+    ["2026-04",19,-185.17,74,147.71],["2026-05",18,49.79,91,241.41],["2026-06",16,387.11,87,104.96],
+    ["2026-07",8,465.55,48,71.77]
+  ];
+  const monthNames = {"01":"янв","02":"фев","03":"мар","04":"апр","05":"май","06":"июн","07":"июл","08":"авг","09":"сен","10":"окт","11":"ноя","12":"дек"};
+  function fmtMonth(m){const [y,mm]=m.split("-");return monthNames[mm]+" "+y.slice(2);}
+  function fmtMoney(v){const sign=v>0?"+":(v<0?"−":"");return sign+"$"+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+  const chartStyle = document.createElement("style");
+  chartStyle.textContent = `
+    .chart{display:grid;grid-template-columns:repeat(13,minmax(46px,1fr));gap:6px;align-items:end;height:220px;padding:10px 4px 0;border-bottom:1px solid var(--ink);position:relative;min-width:700px;}
+    .chart::before{content:"";position:absolute;left:0;right:0;top:var(--zero-top,50%);border-top:1px dashed var(--faint);}
+    .month-col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative;}
+    .bars{display:flex;gap:3px;align-items:flex-end;height:100%;width:100%;justify-content:center;position:relative;}
+    .bar-track{width:12px;height:100%;display:flex;flex-direction:column;justify-content:center;position:relative;}
+    .bar{width:100%;border-radius:2px 2px 0 0;position:absolute;cursor:default;transition:opacity .12s ease;}
+    .bar:hover{opacity:.8;} .bar.neg{border-radius:0 0 2px 2px;}
+    .month-label{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:8px;white-space:nowrap;}
+    .tooltip{position:absolute;background:var(--ink);color:var(--bg);font-family:var(--mono);font-size:11px;padding:6px 9px;border-radius:3px;pointer-events:none;white-space:nowrap;opacity:0;transform:translate(-50%,-6px);transition:opacity .1s ease;z-index:5;}
+    .tooltip.show{opacity:1;}
+  `;
+  document.head.appendChild(chartStyle);
+
+  const allVals = monthly.flatMap(r => [r[2], r[4]]);
+  const maxAbs = Math.max(...allVals.map(Math.abs));
+  const zeroTopPct = 62;
+  const chart = document.getElementById("chart");
+  chart.style.setProperty("--zero-top", zeroTopPct + "%");
+  const tooltip = document.createElement("div");
+  tooltip.className = "tooltip";
+  document.body.appendChild(tooltip);
+
+  function barHeightPct(val, zonePct){ return Math.max(2, (Math.abs(val)/maxAbs)*zonePct); }
+
+  monthly.forEach(([month, tsN, tsPnl, scN, scPnl]) => {
+    const col = document.createElement("div"); col.className = "month-col";
+    const bars = document.createElement("div"); bars.className = "bars";
+    [{val:tsPnl,n:tsN,color:"var(--gold)",label:"trend_slope"},{val:scPnl,n:scN,color:"var(--blue)",label:"M15-скальпер"}].forEach(s => {
+      const track = document.createElement("div"); track.className = "bar-track";
+      const bar = document.createElement("div");
+      const posZone = zeroTopPct, negZone = 100 - zeroTopPct;
+      const h = s.val >= 0 ? barHeightPct(s.val, posZone) : barHeightPct(s.val, negZone);
+      bar.className = "bar" + (s.val < 0 ? " neg" : "");
+      bar.style.background = s.color; bar.style.height = h + "%";
+      if (s.val >= 0) bar.style.bottom = (100 - zeroTopPct) + "%"; else bar.style.top = zeroTopPct + "%";
+      bar.addEventListener("mouseenter", () => { tooltip.textContent = `${s.label} · ${fmtMonth(month)} · ${s.n} сделок · ${fmtMoney(s.val)}`; tooltip.classList.add("show"); });
+      bar.addEventListener("mousemove", (e) => { tooltip.style.left = e.pageX + "px"; tooltip.style.top = (e.pageY - 14) + "px"; });
+      bar.addEventListener("mouseleave", () => tooltip.classList.remove("show"));
+      track.appendChild(bar); bars.appendChild(track);
+    });
+    col.appendChild(bars);
+    const label = document.createElement("div"); label.className = "month-label"; label.textContent = fmtMonth(month);
+    col.appendChild(label); chart.appendChild(col);
+  });
+
+  const tbody = document.getElementById("stats-body");
+  let totTsN=0, totTsPnl=0, totScN=0, totScPnl=0;
+  monthly.forEach(([month, tsN, tsPnl, scN, scPnl]) => {
+    totTsN+=tsN; totTsPnl+=tsPnl; totScN+=scN; totScPnl+=scPnl;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${fmtMonth(month)} ${month.slice(0,4)}</td><td>${tsN}</td><td class="${tsPnl>=0?'pos':'neg'}">${fmtMoney(tsPnl)}</td><td>${scN}</td><td class="${scPnl>=0?'pos':'neg'}">${fmtMoney(scPnl)}</td><td class="${(tsPnl+scPnl)>=0?'pos':'neg'}">${fmtMoney(tsPnl+scPnl)}</td>`;
+    tbody.appendChild(tr);
+  });
+  const totalRow = document.createElement("tr"); totalRow.className = "total";
+  totalRow.innerHTML = `<td>Итого</td><td>${totTsN}</td><td class="${totTsPnl>=0?'pos':'neg'}">${fmtMoney(totTsPnl)}</td><td>${totScN}</td><td class="${totScPnl>=0?'pos':'neg'}">${fmtMoney(totScPnl)}</td><td class="${(totTsPnl+totScPnl)>=0?'pos':'neg'}">${fmtMoney(totTsPnl+totScPnl)}</td>`;
+  tbody.appendChild(totalRow);
+</script>
+</body>
+</html>
